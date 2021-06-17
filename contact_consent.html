@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Contact Form</title>
+    <meta name="bs:input:buttonName" content="type=string,description=Display name for the button">
+    <meta name="bs:output:firstName" content="type=string,description=The first name of the user">
+    <meta name="bs:output:lastName" content="type=string,description=The last name of the user">
+    <meta name="bs:output:email" content="type=string,description=The email of the user">
+    <meta name="bs:output:mobile" content="type=string,description=The mobile of the user">
+    <meta name="bs:outlet:Button Clicked" />
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/Contact-Form-Clean.css">
+    <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+
+<body>
+    <section class="contact-clean">
+        <div class="divform">
+            <h4 class="text-center">Can we get your contact information?</h4>
+            <div class="mb-3"><input class="form-control" type="text" id="inputFirstName" name="firstName" placeholder="First Name" value="" required=""></div>
+            <div class="mb-3"><input class="form-control" type="text" id="inputLastName" name="lastName" placeholder="Last Name" required=""></div>
+            <div class="mb-3"><input class="form-control" type="email" id="inputEmail" name="email" placeholder="Email (ex. name@domain.com)" required="" onblur="checkEmail(this.value)">
+            <span id="emailError"></span>
+            </div>
+            <div class="mb-3"><input class="form-control" type="tel" id="inputMobile" name="mobile" placeholder="Mobile (ex. 09175551234)" required="" onblur="checkNumber(this.value)">
+            <span id="numberError"></span>
+            </div>
+            <div class="mb-3">
+                <div class="form-check"><input class="form-check-input" type="checkbox" id="formCheck-1" onclick="check()"><label class="form-check-label" for="formCheck-1">I consent to being contacted</label></div>
+            </div>
+            <div class="mb-3"><button class="btn btn-primary" type="submit" id="btn" onclick="sendResponse()"></button></div>
+        </div>
+    </section>
+    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+    <script>
+        var validEmail = 0;
+        var validNumber = 0;
+
+        function checkEmail(str) {
+            var error = document.getElementById("emailError");
+            var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            if(!re.test(str)) {
+                error.textContent = "Please enter a valid email address";
+                error.style.color = "red";
+                document.getElementById("btn").style.visibility = "hidden";
+                validEmail = 0;
+            }
+            else {
+                error.textContent = "";
+                validEmail = 1;
+            }
+        }
+
+        function checkNumber(str) {
+            var error = document.getElementById("numberError");
+            var re = /^(09|\+639)\d{9}$/;
+            if(!re.test(str)) {
+                error.textContent = "Please enter a valid mobile number";
+                error.style.color = "red";
+                document.getElementById("btn").style.visibility = "hidden";   
+                validNumber = 0;  
+            }
+            else {
+                error.textContent = "";
+                validNumber = 1;             
+            }
+        }
+
+        function check() {
+            if (document.getElementById("formCheck-1").checked && validEmail == 1 && validNumber == 1) {
+                document.getElementById("btn").style.visibility = "visible";
+            } else {
+                document.getElementById("btn").style.visibility = "hidden";
+            }
+        }
+
+        function onChatBotReady() {
+        // You have to define HTML meta "bs:input:buttonName" in order to inform bot send data to buttonName parameter webview
+        document.getElementById("btn").style.visibility = "hidden";
+                
+        var btnName = BotStarWebview('getParameter', 'buttonName');
+    
+        var btn = document.getElementById('btn');
+        if (btnName) {
+            btn.appendChild(document.createTextNode(btnName));
+            btn.style.display = 'inline-block';
+            }
+        }
+    
+        function sendResponse() {
+
+            var inputFirstName = document.getElementById("inputFirstName").value;
+            var inputLastName = document.getElementById("inputLastName").value;
+            var inputEmail = document.getElementById("inputEmail").value;
+            var inputMobile = document.getElementById("inputMobile").value;
+
+            var outputs = {
+                firstName: inputFirstName,
+                lastName: inputLastName,
+                email: inputEmail,
+                mobile: inputMobile,
+            };            
+    
+            BotStarWebview('sendResponse', '', outputs, 'Button Clicked').catch((err) => {
+             console.log(err);
+            });
+    
+        }
+        </script>
+        <script src="https://static.botstar.com/webview/sdk/webview-sdk-1.0.0.js"></script> 
+</body>
+</html>

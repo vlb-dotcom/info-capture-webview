@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>contact</title>
+    <meta name="bs:input:buttonName" content="type=string,description=Display name for the button">
+    <meta name="bs:output:street" content="type=string,description=Street address">
+    <meta name="bs:output:city" content="type=string,description=City or Municipality">
+    <meta name="bs:output:province" content="type=string,description=Province or District">
+    <meta name="bs:output:zip" content="type=string,description=Zip code">
+    <meta name="bs:outlet:Button Clicked" />
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/Contact-Form-Clean.css">
+    <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+
+<body>
+    <section class="contact-clean">
+        <div class="divform">
+            <h4 class="text-center">Please enter your address</h4>
+            <div class="mb-3"><input class="form-control" type="text" id="inputStreet" name="street" placeholder="Street Address" required></div>
+            <div class="mb-3"><input class="form-control" type="text" id="inputCity" name="city" placeholder="City or Municipality" rows="14" required></div>
+            <div class="mb-3"><input class="form-control" type="text" id="inputProvince" name="province" placeholder="Province or District" required></div>
+            <div class="mb-3"><input class="form-control" type="number" id="inputZip" name="zip" placeholder="Zip Code"></div>
+            <div class="mb-3"><button class="btn btn-primary" type="submit" id="btn" onclick="sendResponse()"></button></div>
+        </div>
+    </section>
+    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+    <script>
+        function onChatBotReady() {
+        // You have to define HTML meta "bs:input:buttonName" in order to inform bot send data to buttonName parameter webview
+                
+        var btnName = BotStarWebview('getParameter', 'buttonName');
+    
+        var btn = document.getElementById('btn');
+        if (btnName) {
+            btn.appendChild(document.createTextNode(btnName));
+            btn.style.display = 'inline-block';
+            }
+        }
+    
+        function sendResponse() {
+
+            var inputStreet = document.getElementById("inputStreet").value;
+            var inputCity = document.getElementById("inputCity").value;
+            var inputProvince = document.getElementById("inputProvince").value;
+            var inputZip = document.getElementById("inputZip").value;
+
+            var outputs = {
+                street: inputStreet,
+                city: inputCity,
+                province: inputProvince,
+                zip: inputZip,
+            };            
+    
+            BotStarWebview('sendResponse', '', outputs, 'Button Clicked').catch((err) => {
+             console.log(err);
+            });
+    
+        }
+        </script>
+        <script src="https://static.botstar.com/webview/sdk/webview-sdk-1.0.0.js"></script>     
+</body>
+</html>
